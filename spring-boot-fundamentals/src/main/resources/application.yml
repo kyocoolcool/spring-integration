@@ -1,0 +1,25 @@
+
+#user:
+#  name: ChrisChen
+#  age: 30
+#  boss: true
+#  maps: {k1: vv1,k2: vv2}
+#  lists: [a,b,c]
+#  dog:
+#    name: little ball
+#    age: 3
+#server:
+#  port: 8080
+#spring:
+#  profiles:
+#    active: dev
+#---
+#server:
+#     port: 8082
+#spring:
+#  profiles: dev
+#---
+#server:
+#     port: 8083
+#spring:
+#  profiles: prod
