@@ -8,23 +8,23 @@ package kyocoolcool.security.bean;
  * @Version 1.0
  **/
 
-public class User {
-    private Name name;
+public class Animal {
+    private DogName name;
     private Integer age;
 
-    public User() {
+    public Animal() {
     }
 
-    public User(Name name, Integer age) {
+    public Animal(DogName name, Integer age) {
         this.name = name;
         this.age = age;
     }
 
-    public Name getName() {
+    public DogName getName() {
         return name;
     }
 
-    public void setName(Name name) {
+    public void setName(DogName name) {
         this.name = name;
     }
 
@@ -38,7 +38,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Animal{" +
                 "name=" + name +
                 ", age=" + age +
                 '}';

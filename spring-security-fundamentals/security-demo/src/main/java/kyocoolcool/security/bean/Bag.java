@@ -1,5 +1,7 @@
 package kyocoolcool.security.bean;
 
+import java.util.List;
+
 /**
  * @ClassName User
  * @Description TODO
@@ -8,23 +10,23 @@ package kyocoolcool.security.bean;
  * @Version 1.0
  **/
 
-public class User {
-    private Name name;
+public class Bag {
+    private List<String> name;
     private Integer age;
 
-    public User() {
+    public Bag() {
     }
 
-    public User(Name name, Integer age) {
+    public Bag(List<String> name, Integer age) {
         this.name = name;
         this.age = age;
     }
 
-    public Name getName() {
+    public List<String> getName() {
         return name;
     }
 
-    public void setName(Name name) {
+    public void setName(List<String> name) {
         this.name = name;
     }
 
@@ -38,7 +40,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Bag{" +
                 "name=" + name +
                 ", age=" + age +
                 '}';
