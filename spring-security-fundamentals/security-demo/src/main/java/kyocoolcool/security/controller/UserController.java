@@ -3,10 +3,8 @@ package kyocoolcool.security.controller;
 import kyocoolcool.security.bean.*;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +21,9 @@ public class UserController {
 
 
     //@RequestParam(required = false,defaultValue = "Tom") String userName 可以利用此參數，預設數值及非強制傳遞
+    //@PageableDefault(page = 10,size = 20,sort = "name,asc") Pageable pageable 若沒有傳size,page,sort參數，預設數值
     @RequestMapping(path = "/user", method = RequestMethod.GET)
-    public List<User> query(Person person, Pageable pageable) {
+    public List<User> query(Person person, @PageableDefault(page = 10, size = 20, sort = "name,asc") Pageable pageable) {
         System.out.println(pageable);
         System.out.println(ReflectionToStringBuilder.toString(person));
         System.out.println(pageable.getPageSize());
@@ -61,6 +60,14 @@ public class UserController {
         users.add(new User(new Name("b", "b"), 20));
         users.add(new User(new Name("c", "c"), 30));
         return users;
+    }
+
+    @RequestMapping(path = "/user/{id}", method = RequestMethod.GET)
+    public User getUser(@PathVariable String id) {
+        System.out.println(id);
+        User user = new User(new Name("Chris","Chen"),20);
+        System.out.println(user);
+        return user;
     }
 
 }

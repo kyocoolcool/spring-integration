@@ -41,9 +41,9 @@ public class AppTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/user")
                 .param("name", "Chris")
                 .param("age", "18")
-                .param("size", "15")
-                .param("page", "3")
-                .param("sort", "age,desc")
+//                .param("size", "15")
+//                .param("page", "3")
+//                .param("sort", "age,desc")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3));
@@ -80,5 +80,12 @@ public class AppTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3));
+    }
+
+    @Test
+    public void whenGetInfoSuccess() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/1")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name.firstName").value("Chris"));
     }
 }
