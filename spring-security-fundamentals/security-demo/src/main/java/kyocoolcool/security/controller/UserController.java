@@ -1,5 +1,6 @@
 package kyocoolcool.security.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import kyocoolcool.security.bean.*;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.domain.Pageable;
@@ -62,12 +63,47 @@ public class UserController {
         return users;
     }
 
-    @RequestMapping(path = "/user/{id}", method = RequestMethod.GET)
+    /**
+     * {id:\d+} 正則表達式，只接收數字
+     */
+    @RequestMapping(path = "/user/{id:\\d+}", method = RequestMethod.GET)
     public User getUser(@PathVariable String id) {
         System.out.println(id);
-        User user = new User(new Name("Chris","Chen"),20);
+        User user = new User(new Name("Chris", "Chen"), 20);
         System.out.println(user);
         return user;
+    }
+
+    /*
+     * @description: @JsonView 使用範例，來選擇回傳哪些屬性
+     * @param
+     * @return: java.util.List<kyocoolcool.security.bean.Person>
+     * @author: Chris Chen
+     * @time: 2019/9/28 3:50 PM
+     */
+    @RequestMapping(path = "/person", method = RequestMethod.GET)
+    @JsonView(Person.UserSimpleView.class)
+    public List<Person> queryByJsonViewBySimple() {
+        ArrayList<Person> persons = new ArrayList<Person>();
+        persons.add(new Person("Chris", 20));
+        persons.add(new Person("Wang", 10));
+        persons.add(new Person("Da", 30));
+        return persons;
+    }
+
+    /*
+     * @description: 必須定義回傳哪一個view，若沒定義就直接回傳所有的屬性
+     * @param id
+     * @return: kyocoolcool.security.bean.Person
+     * @author: Chris Chen
+     * @time: 2019/9/28 3:49 PM
+     */
+    @RequestMapping(path = "/person/{id}", method = RequestMethod.GET)
+    @JsonView(Person.UserDetailView.class)
+    public Person queryByJsonViewByDetail(@PathVariable String id) {
+        System.out.println("接收的路徑變數:" + id);
+        Person person = new Person("Da", 30);
+        return person;
     }
 
 }

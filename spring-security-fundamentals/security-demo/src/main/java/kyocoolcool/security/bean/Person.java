@@ -1,14 +1,24 @@
 package kyocoolcool.security.bean;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 /**
  * @ClassName User
- * @Description TODO
+ * @Description jsonView須加在get方法上
  * @Author Chris Chen
  * @Date 2019/9/25 7:26 PM
  * @Version 1.0
  **/
 
 public class Person {
+    public interface UserSimpleView {
+    }
+
+    ;
+
+    public interface UserDetailView extends UserSimpleView {
+    }
+
     private String name;
     private Integer age;
 
@@ -20,6 +30,7 @@ public class Person {
         this.age = age;
     }
 
+    @JsonView(UserSimpleView.class)
     public String getName() {
         return name;
     }
@@ -28,6 +39,7 @@ public class Person {
         this.name = name;
     }
 
+    @JsonView(UserDetailView.class)
     public Integer getAge() {
         return age;
     }
