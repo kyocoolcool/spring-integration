@@ -5,8 +5,11 @@ import kyocoolcool.security.bean.*;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +41,25 @@ public class UserController {
     }
 
     @RequestMapping(path = "/user2", method = RequestMethod.POST)
-    public List<User> query2(@RequestBody(required = false) List<User> users) {
-        System.out.println(users);
+    public List<User> query2(@Valid @RequestBody List<User> users) {
+        System.out.println(users.get(0).getBirthday());
         return users;
+    }
+
+    /*
+     * @description: 若請求中驗證發現缺少的參數會進行額外處理，錯誤訊息在BindingRequest errors
+     * @param user
+     * @param errors
+     * @return: kyocoolcool.security.bean.User
+     * @author: Chris Chen
+     * @time: 2019/9/29 4:54 PM
+     */
+    @RequestMapping(path = "/user5", method = RequestMethod.POST)
+    public User queryByPost2(@Valid @RequestBody User user, BindingResult errors) {
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach(error -> System.out.println(error.getDefaultMessage()));
+        }
+        return user;
     }
 
     @RequestMapping(path = "/user3", method = RequestMethod.GET)
@@ -104,6 +123,24 @@ public class UserController {
         System.out.println("接收的路徑變數:" + id);
         Person person = new Person("Da", 30);
         return person;
+    }
+
+    @PutMapping(path = "/user/{id:\\d+}")
+    public User update(@Valid @RequestBody User user, BindingResult errors) {
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach(error -> {
+                FieldError fieldError = (FieldError) error;
+                String message = fieldError.getField() + ":" + error.getDefaultMessage();
+                System.out.println(message);
+            });
+        }
+        System.out.println(user);
+        return user;
+    }
+
+    @DeleteMapping(path = "/user/{id:\\d+}")
+    public void delete(@PathVariable String id) {
+        System.out.println(id);
     }
 
 }
