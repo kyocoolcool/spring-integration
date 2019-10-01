@@ -2,6 +2,7 @@ package kyocoolcool.security.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import kyocoolcool.security.bean.*;
+import kyocoolcool.security.exception.UserNotExistException;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -138,9 +139,28 @@ public class UserController {
         return user;
     }
 
+    /*
+     * @description: Restful delete method
+     * @param id
+     * @return: void
+     * @author: Chris Chen
+     * @time: 2019/10/1 10:10 AM
+     */
     @DeleteMapping(path = "/user/{id:\\d+}")
     public void delete(@PathVariable String id) {
         System.out.println(id);
     }
 
+    /*
+     * @description: 自定義Exception發生及處理
+     * @param id
+     * @return: kyocoolcool.security.bean.Person
+     * @author: Chris Chen
+     * @time: 2019/10/1 10:11 AM
+     */
+    @RequestMapping(path = "/person2/{id}", method = RequestMethod.GET)
+    @JsonView(Person.UserDetailView.class)
+    public Person queryHandleException(@PathVariable String id) {
+        throw new UserNotExistException(id);
+    }
 }
