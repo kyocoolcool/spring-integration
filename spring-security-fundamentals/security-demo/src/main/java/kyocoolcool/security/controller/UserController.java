@@ -104,6 +104,7 @@ public class UserController {
     @RequestMapping(path = "/person", method = RequestMethod.GET)
     @JsonView(Person.UserSimpleView.class)
     public List<Person> queryByJsonViewBySimple() {
+        System.out.println("進入person服務");
         ArrayList<Person> persons = new ArrayList<Person>();
         persons.add(new Person("Chris", 20));
         persons.add(new Person("Wang", 10));
