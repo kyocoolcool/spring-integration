@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import kyocoolcool.security.bean.*;
 import kyocoolcool.security.exception.UserNotExistException;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,13 @@ import java.util.List;
  **/
 @RestController
 public class UserController {
+    //Authentication authentication 參數自動映射authenticationContext
+    //@AuthenticationPrincipal UserDetails user 也可以用此參數，表示僅映射userDetails部分
+    @RequestMapping("/me")
+    public Object getAuthenticationContext(Authentication authentication) {
+//        return SecurityContextHolder.getContext().getAuthentication();
+        return authentication;
+    }
 
 
     //@RequestParam(required = false,defaultValue = "Tom") String userName 可以利用此參數，預設數值及非強制傳遞

@@ -28,4 +28,9 @@ public class SecurityProperties {
         this.browserProperties.setLoginPage(loginPage);
     }
 
+    public void setLoginType(LoginType loginType) {
+        this.browserProperties.setLoginType(loginType);
+    }
+
+
 }

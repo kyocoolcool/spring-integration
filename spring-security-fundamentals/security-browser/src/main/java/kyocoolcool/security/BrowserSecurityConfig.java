@@ -1,5 +1,7 @@
 package kyocoolcool.security;
 
+import kyocoolcool.security.authentication.MyAuthenticationFailureHandler;
+import kyocoolcool.security.authentication.MyAuthenticationSuccessHandler;
 import kyocoolcool.security.core.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +29,12 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SecurityProperties securityProperties;
 
+    @Autowired
+    private MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
+
+    @Autowired
+    private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -45,9 +53,11 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 .loginPage("/authentication/require")
                 .loginProcessingUrl("/authentication/form")
+                .successHandler(myAuthenticationSuccessHandler)
+                .failureHandler(myAuthenticationFailureHandler)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/authentication/require",securityProperties.getBrowserProperties().getLoginPage()).permitAll()
+                .antMatchers("/authentication/require", securityProperties.getBrowserProperties().getLoginPage(),"/error").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

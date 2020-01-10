@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  **/
 @Controller
 public class LoginController {
+    @RequestMapping("/index.html")
+    public String first() {
+        return "index";
+    }
+
     @RequestMapping("/signIn")
     public String index() {
         return "demo-signIn";

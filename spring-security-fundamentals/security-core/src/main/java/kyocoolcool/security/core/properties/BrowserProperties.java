@@ -10,12 +10,20 @@ package kyocoolcool.security.core.properties;
 
 public class BrowserProperties {
     private String loginPage; //預設路徑
-
+    private LoginType loginType=LoginType.JSON;
     public String getLoginPage() {
         return loginPage;
     }
 
     public void setLoginPage(String loginPage) {
         this.loginPage = loginPage;
+    }
+
+    public LoginType getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(LoginType loginType) {
+        this.loginType = loginType;
     }
 }
