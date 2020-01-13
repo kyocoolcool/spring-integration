@@ -3,6 +3,7 @@ package kyocoolcool.security.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kyocoolcool.security.core.properties.LoginType;
 import kyocoolcool.security.core.properties.SecurityProperties;
+import kyocoolcool.security.support.SimpleResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class MyAuthenticationFailureHandler extends SimpleUrlAuthenticationFailu
         if(LoginType.JSON.equals(securityProperties.getBrowserProperties().getLoginType())){
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setContentType("application/json; charset=UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(exception));
+            response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(exception.getMessage())));
         }else {
             super.onAuthenticationFailure(request,response,exception);
         }

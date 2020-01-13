@@ -3,6 +3,7 @@ package kyocoolcool.security;
 import kyocoolcool.security.authentication.MyAuthenticationFailureHandler;
 import kyocoolcool.security.authentication.MyAuthenticationSuccessHandler;
 import kyocoolcool.security.core.properties.SecurityProperties;
+import kyocoolcool.security.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @ClassName BrowserSecurityConfig
@@ -49,15 +51,18 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+        validateCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
         //httpBasic()登入方式
-        http.formLogin()
+            http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin()
                 .loginPage("/authentication/require")
                 .loginProcessingUrl("/authentication/form")
                 .successHandler(myAuthenticationSuccessHandler)
                 .failureHandler(myAuthenticationFailureHandler)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/authentication/require", securityProperties.getBrowserProperties().getLoginPage(),"/error").permitAll()
+                .antMatchers("/authentication/require", securityProperties.getBrowserProperties().getLoginPage(),"/error","/code/image").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
