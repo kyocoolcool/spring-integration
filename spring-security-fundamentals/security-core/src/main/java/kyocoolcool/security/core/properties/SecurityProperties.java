@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 public class SecurityProperties {
     private BrowserProperties browserProperties=new BrowserProperties();
 
+    private ValidateCodeProperties code = new ValidateCodeProperties();
+
     public BrowserProperties getBrowserProperties() {
         return browserProperties;
     }
@@ -32,5 +34,11 @@ public class SecurityProperties {
         this.browserProperties.setLoginType(loginType);
     }
 
+    public ValidateCodeProperties getCode() {
+        return code;
+    }
 
+    public void setCode(ValidateCodeProperties code) {
+        this.code = code;
+    }
 }

@@ -14,6 +14,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 /**
  * @ClassName BrowserSecurityConfig
@@ -37,9 +41,23 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
 
+//    @Autowired
+//    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private DataSource dataSource;
+
     @Bean
-    PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        final JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+//        tokenRepository.setCreateTableOnStartup(true);
+        return tokenRepository;
     }
 
     /**
@@ -53,6 +71,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
         validateCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
+        validateCodeFilter.setSecurityProperties(securityProperties);
+        validateCodeFilter.afterPropertiesSet();
+
         //httpBasic()登入方式
             http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
@@ -60,6 +81,11 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/authentication/form")
                 .successHandler(myAuthenticationSuccessHandler)
                 .failureHandler(myAuthenticationFailureHandler)
+                .and()
+                .rememberMe()
+                .tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(securityProperties.getBrowserProperties().getRememberMeSeconds())
+                .userDetailsService(userDetailsService)
                 .and()
                 .authorizeRequests()
                 .antMatchers("/authentication/require", securityProperties.getBrowserProperties().getLoginPage(),"/error","/code/image").permitAll()
