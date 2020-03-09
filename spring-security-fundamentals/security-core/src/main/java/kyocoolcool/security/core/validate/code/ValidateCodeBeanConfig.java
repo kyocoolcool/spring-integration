@@ -1,6 +1,9 @@
 package kyocoolcool.security.core.validate.code;
 
 import kyocoolcool.security.core.properties.SecurityProperties;
+import kyocoolcool.security.core.validate.code.image.ImageCodeGenerator;
+import kyocoolcool.security.core.validate.code.sms.DefaultSmsCodeSender;
+import kyocoolcool.security.core.validate.code.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -26,5 +29,12 @@ public class ValidateCodeBeanConfig {
         ImageCodeGenerator codeGenerator = new ImageCodeGenerator();
         codeGenerator.setSecurityProperties(securityProperties);
         return codeGenerator;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(SmsCodeSender.class)
+    public SmsCodeSender smsCodeSender() {
+        ImageCodeGenerator codeGenerator = new ImageCodeGenerator();
+        return new DefaultSmsCodeSender();
     }
 }

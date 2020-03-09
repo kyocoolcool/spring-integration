@@ -1,7 +1,9 @@
-package kyocoolcool.security.core.validate.code;
+package kyocoolcool.security.core.validate.code.image;
 
 import kyocoolcool.security.core.properties.SecurityProperties;
+import kyocoolcool.security.core.validate.code.ValidateCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
@@ -16,13 +18,14 @@ import java.util.Random;
  * @Date 2020/1/13 1:58 PM
  * @Version 1.0
  **/
-public class ImageCodeGenerator implements ValidateCodeGenerator{
+@Component("imageValidateCodeGenerator")
+public class ImageCodeGenerator implements ValidateCodeGenerator {
 
     @Autowired
     private SecurityProperties securityProperties;
 
     @Override
-    public ImageCode createImageCode(ServletWebRequest request) {
+    public ImageCode generate(ServletWebRequest request) {
         int width = ServletRequestUtils.getIntParameter(request.getRequest(),"width",securityProperties.getCode().getImage().getWidth());
         int height = ServletRequestUtils.getIntParameter(request.getRequest(),"height",securityProperties.getCode().getImage().getHeight());
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

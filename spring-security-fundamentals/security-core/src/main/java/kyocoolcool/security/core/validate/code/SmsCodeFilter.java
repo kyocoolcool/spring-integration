@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @Version 1.0
  **/
 
-public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
+public class SmsCodeFilter extends OncePerRequestFilter implements InitializingBean {
     private AuthenticationFailureHandler authenticationFailureHandler;
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
     private Set<String> urls=new HashSet<>();
@@ -64,9 +64,9 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     @Override
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
-        String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(securityProperties.getCode().getImage().getUrl(), ",");
+        String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(securityProperties.getCode().getSms().getUrl(), ",");
         Arrays.asList(configUrls).stream().forEach(x->urls.add(x));
-        urls.add("/authentication/form");
+        urls.add("/authentication/mobile");
     }
 
     @Override
@@ -91,8 +91,8 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     }
 
     private void validate(ServletWebRequest request) throws ServletRequestBindingException {
-//        ImageCode codeInSession =(ImageCode) sessionStrategy.getAttribute(request, ValidateCodeController.SESSION_KEY);
-        String codeInRequest=ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode");
+//        ValidateCode codeInSession =(ImageCode) sessionStrategy.getAttribute(request, DEFAULT_VALIDATE_CODE_URL_PREFIX);
+        String codeInRequest=ServletRequestUtils.getStringParameter(request.getRequest(), "smsCode");
         if (StringUtils.isBlank(codeInRequest)) {
             throw new ValidateCodeException("驗證碼的值不能為空");
         }

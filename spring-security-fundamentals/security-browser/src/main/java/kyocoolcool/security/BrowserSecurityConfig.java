@@ -4,6 +4,7 @@ import kyocoolcool.security.authentication.MyAuthenticationFailureHandler;
 import kyocoolcool.security.authentication.MyAuthenticationSuccessHandler;
 import kyocoolcool.security.core.properties.SecurityProperties;
 import kyocoolcool.security.core.validate.code.ValidateCodeFilter;
+import kyocoolcool.security.core.validate.code.sms.SmsCodeAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,8 +42,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
 
-//    @Autowired
-//    private UserDetailsService userDetailsService;
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
     @Autowired
     private DataSource dataSource;
@@ -74,8 +75,15 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         validateCodeFilter.setSecurityProperties(securityProperties);
         validateCodeFilter.afterPropertiesSet();
 
+//        SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
+//        smsCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
+//        smsCodeFilter.setSecurityProperties(securityProperties);
+//        smsCodeFilter.afterPropertiesSet();
+
         //httpBasic()登入方式
-            http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+            http
+                    .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+//                 .addFilterBefore(smsCodeFilter,UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
                 .loginPage("/authentication/require")
                 .loginProcessingUrl("/authentication/form")
@@ -88,11 +96,13 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(userDetailsService)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/authentication/require", securityProperties.getBrowserProperties().getLoginPage(),"/error","/code/image").permitAll()
+                .antMatchers("/authentication/require", securityProperties.getBrowserProperties().getLoginPage(),"/error","/code/*").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .csrf().disable();
+                .csrf().disable()
+//                .apply(smsCodeAuthenticationSecurityConfig)
+            ;
     }
 
     /**
